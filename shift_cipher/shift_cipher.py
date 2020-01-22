@@ -59,6 +59,7 @@ class shiftCipher:
 
 '''
 # Import data
+# Comment out to load text file
 with open("61195-0.txt", "r"") as f:
     plaintext = f.read().replace("\n", "")
 '''
