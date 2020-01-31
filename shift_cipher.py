@@ -24,12 +24,13 @@ class shiftCipher:
 		return message.upper().translate(trans)
 
 	# Break cipher by frequency analysis
-	def break_shift(self, enc_msg):
+	def break_shift(self, enc_msg, verbose=False):
 		# Get counts of each letter of the alphabet of encrypted message
 		counts = Counter(enc_msg)
 		# Initialize minimum difference between sum and English probability
 		min_diff = 1
 		most_likely_k = 0
+		most_likely_sum = 0
 		# Iterate through each letter of the alphabet (testing every k shifts)
 		for k in range(len(ALPHABET)):
 			# Initialize sum
@@ -43,7 +44,8 @@ class shiftCipher:
 				h = counts[self.encrypt(ALPHABET[i], k)] / len(enc_msg)
 				# Add product to sum of probabilities
 				sum += f * h
-			print(f"k = {k}; sum = {str(sum)[:10]}; msg = {plain_message[:30]}...")
+			if verbose:
+				print(f"k = {k}; sum = {str(sum)[:10]}; msg = {plain_message[:30]}...")
 			#print(f"Decrypted message = {plain_message}")
 			# Check if sum is closer to 0.065 for given k
 			diff = abs(sum - ENG_PROBABILITY)
@@ -51,18 +53,27 @@ class shiftCipher:
 				# If closer, update most likely k
 				min_diff = diff
 				most_likely_k = k
+				most_likely_sum = sum
 
 		# Return most likely k and decrypted message
-		print(f"The most likely k is {most_likely_k}")
 		plain_message = self.decrypt(enc_msg, most_likely_k)
-		print(f"Decrypted message = {plain_message}")
+		if verbose:
+			print(f"The most likely k is {most_likely_k}")
+			print(f"Decrypted message = {plain_message}")
+
+		d = dict()
+		d["k"] = most_likely_k
+		d["sum"] = most_likely_sum
+		d["msg"] = plain_message
+
+		return d
 
 '''
 # Import data
 # Comment out to load text file
 with open("61195-0.txt", "r"") as f:
     plaintext = f.read().replace("\n", "")
-'''
+
 # Plaintext to encrypt
 plaintext = "THIS IS A HIDDEN MESSAGE"
 plaintext = "SHIFTCIPHERSARESIMPLE"
@@ -79,4 +90,5 @@ print(f"Decrypted message: {dec_message}")
 
 # Examples of how to break encrypted messages
 enc_msg_1 = "WIVHLVETPRERCPJZJTRESVLJVUFEFKYVIKPGVJFWTZGYVIJKFFSLKZKZJEFKLJLRCCPRJJZDGCVRJZKZJNZKYJYZWKTZGYVIJDREPFWKYVJVFKYVITZGYVIJNZCCRGGVRIYVIVZEKYVEVOKWVNDFEKYJ"
-sc.break_shift(enc_msg_1)
+broken = sc.break_shift(enc_msg_1, verbose=True)
+'''
