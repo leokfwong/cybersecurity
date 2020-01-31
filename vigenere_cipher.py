@@ -8,6 +8,7 @@ alphabet = string.ascii_uppercase
 index = list(range(len(alphabet)))
 dict_alphabet = dict(zip(alphabet, index))
 dict_index = dict(zip(index, alphabet))
+ENG_PROBABILITY = 0.065
 
 class vigenereCipher:
 	"""
@@ -38,17 +39,22 @@ class vigenereCipher:
 	# Find the length of the unknown key
 	def findKeyLength(self, cipher):
 		cipher = re.sub(r"[^A-Z]+", "", cipher.upper())
+		print(cipher)
 		potential_key_length = 0
 		potential_key_sum = 0
+		min_diff = 1
 		for i in range(1, len(cipher)):
 			current = [cipher[index] for index, value in enumerate(cipher) if index % i == 0]
 			current_text = "".join(current)
 			sc = shift_cipher.shiftCipher()
 			broken = sc.break_shift(current_text)
 			print(f"Iteration {i}, sum={broken['sum']}")
-			if broken["sum"] > potential_key_sum:
+
+			diff = abs(broken["sum"] - ENG_PROBABILITY)
+			if diff < min_diff:
 				potential_key_sum = broken["sum"]
 				potential_key_length = i
+				min_diff = diff
 		print(f"Potential key length is {potential_key_length}, ({potential_key_sum})")
 
 # Plaintext and key
