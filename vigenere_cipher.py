@@ -111,4 +111,8 @@ cipher = readTxtString("cipher/cipher.txt")
 key_length = vig.findKeyLength(cipher, verbose=True)
 broken_key = vig.breakVigenere(cipher, key_length, verbose=True)
 broken_cipher = vig.decrypt(cipher, broken_key)
-print(broken_cipher)
+# Write to file
+with open("cipher/broken_key.txt", "w") as text_file:
+    text_file.write(broken_key)
+with open("cipher/broken_cipher.txt", "w") as text_file:
+    text_file.write(broken_cipher)
