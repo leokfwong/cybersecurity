@@ -14,7 +14,6 @@ class vigenereCipher:
 	"""
 	Object containing methods to encrypt and decrypt a Vigenere cipher given a message and a key.
 	"""
-
 	# Encrypt message given a key
 	def encrypt(self, plaintext, key):
 		plaintext = plaintext.upper()
@@ -30,6 +29,7 @@ class vigenereCipher:
 
 	# Decrypt cipher given a key
 	def decrypt(self, cipher, key):
+		cipher = cipher.upper()
 		text = ""
 		offset = 0
 		for i in range(len(cipher)):
@@ -79,31 +79,36 @@ class vigenereCipher:
 			print(f"The key is {broken_key}")
 		return broken_key
 
-
+# Helper function to read and process text into a string
 def readTxtString(path):
 	with open(path, "r") as f:
 		plaintext = f.read().replace("\n", "")
 		plaintext = re.sub(r'\s+', ' ', plaintext)
 		return plaintext
 
+# Create vigenere object
+vig = vigenereCipher()
+		
+'''
+To encrypt or decrypt messages given a key
+'''
 # Load plaintext and set key
 plaintext = readTxtString("plaintext/test.txt")
 key = "MAMBA"
-
-# Create vigenere object
-vig = vigenereCipher()
-
 # Encrypt plaintext
 encrypted_message = vig.encrypt(plaintext, key)
 print(f"The encrypted message is {encrypted_message}")
-
 # Decrypt cipher
 decrypted_message = vig.decrypt(encrypted_message, key)
 print(f"The decrypted message is {decrypted_message}")
 
+'''
+To break an encrypted text without a key
+'''
 # Load cipher with unknown key
 cipher = readTxtString("cipher/cipher.txt")
 # Break Vigenere cipher
 key_length = vig.findKeyLength(cipher, verbose=True)
 broken_key = vig.breakVigenere(cipher, key_length, verbose=True)
-
+broken_cipher = vig.decrypt(cipher, broken_key)
+print(broken_cipher)
